@@ -24,7 +24,11 @@ class TestHTMLNode(unittest.TestCase):
     
     def test_props_to_html(self):
         node = HTMLNode("p", "test", None, {"prop1": "a", "prop2": "b", "prop3": "c"})
-        self.assertEqual(node.props_to_html(), 'prop1="a" prop2="b" prop3="c"')
+        self.assertEqual(node.props_to_html(), ' prop1="a" prop2="b" prop3="c"')
+
+    def test_props_to_html2(self):
+        node = HTMLNode()
+        self.assertEqual(node.props_to_html(), '')
 
 if __name__ == "__main__":
     unittest.main()

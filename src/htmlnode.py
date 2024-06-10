@@ -21,10 +21,12 @@ class HTMLNode:
     
 class LeafNode(HTMLNode):
 
-    def __init__(self, value, tag=None, props=None) -> None:
-        super().__init__(tag=tag, value=value, props=props)
+    def __init__(self, tag, value, props=None) -> None:
+        super().__init__(tag, value, None, props)
 
     def to_html(self):
+        if self.value is None:
+            raise ValueError("Missing value in leaf node")
         return (
             self.value
             if self.tag is None
@@ -34,6 +36,20 @@ class LeafNode(HTMLNode):
     def __repr__(self) -> str:
         return f"LeafNode(tag={self.tag}, value={self.value}, props={self.props})"
 
+class ParentNode(HTMLNode):
+
+    def __init__(self, tag, children, props=None) -> None:
+        super().__init__(tag, None, children, props)
+    
+    def to_html(self):
+        if self.tag is None:
+            raise ValueError("Missing tag in parent node")
+        if not self.children:
+            raise ValueError("Missing children in parent node")
+        contents = []
+        for child in self.children:
+            contents.append(child.to_html())
+        return f"<{self.tag}{self.props_to_html()}>" + "".join(contents) + f"<\\{self.tag}>"
 
 if __name__ == '__main__':
     node = HTMLNode("test", "test", "test", {"test": "test", "test2": "test2"})
@@ -42,8 +58,11 @@ if __name__ == '__main__':
     node2 = HTMLNode()
     print(node2.props_to_html())
 
-    node = LeafNode("test text 123", "p", {"test": "test", "test2": "test2"})
+    node = LeafNode("p", "test text 123", {"test": "test", "test2": "test2"})
     print(node)
     print(node.to_html())
-    node2 = LeafNode("test text 123")
+    node2 = LeafNode(None, "test text 123")
     print(node2.to_html())
+
+    node = ParentNode("p", [LeafNode(None, "test 1"), LeafNode("b", "test 2")], {"prop1": "a", "prop2": "b"})
+    print(node.to_html())

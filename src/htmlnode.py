@@ -26,11 +26,11 @@ class LeafNode(HTMLNode):
 
     def to_html(self):
         if self.value is None:
-            raise ValueError("Missing value in leaf node")
+            raise ValueError("Invalid leaf node: no value")
         return (
             self.value
             if self.tag is None
-            else f'<{self.tag}{self.props_to_html()}>{self.value}<\\{self.tag}>'
+            else f'<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>'
         )
 
     def __repr__(self) -> str:
@@ -43,13 +43,13 @@ class ParentNode(HTMLNode):
     
     def to_html(self):
         if self.tag is None:
-            raise ValueError("Missing tag in parent node")
+            raise ValueError("Invalid parent node: no tag")
         if not self.children:
-            raise ValueError("Missing children in parent node")
+            raise ValueError("Invalid parent node: no children")
         contents = []
         for child in self.children:
             contents.append(child.to_html())
-        return f"<{self.tag}{self.props_to_html()}>" + "".join(contents) + f"<\\{self.tag}>"
+        return f"<{self.tag}{self.props_to_html()}>" + "".join(contents) + f"</{self.tag}>"
 
 if __name__ == '__main__':
     node = HTMLNode("test", "test", "test", {"test": "test", "test2": "test2"})

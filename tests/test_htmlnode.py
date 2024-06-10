@@ -34,11 +34,11 @@ class TestLeafNode(unittest.TestCase):
 
     def test_to_html(self):
         node = LeafNode("p", "test text 123", {"prop1": "a", "prop2": "b"})
-        self.assertEqual(node.to_html(), "<p prop1=\"a\" prop2=\"b\">test text 123<\\p>")
+        self.assertEqual(node.to_html(), "<p prop1=\"a\" prop2=\"b\">test text 123</p>")
 
     def test_to_html_no_props(self):
         node2 = LeafNode("p", "test text 123")
-        self.assertEqual(node2.to_html(), "<p>test text 123<\\p>")
+        self.assertEqual(node2.to_html(), "<p>test text 123</p>")
 
     def test_to_html_no_tag(self):
         node = LeafNode(None, "test text 123")
@@ -67,7 +67,7 @@ class TestParentNode(unittest.TestCase):
         child_node2 = LeafNode("p", "test 2")
         child_node3 = LeafNode(None, "test 3")
         node = ParentNode("div", [child_node1, child_node2, child_node3], {"prop3": "c", "prop4": "d"})
-        self.assertEqual(node.to_html(), f"<div{node.props_to_html()}>{child_node1.to_html()}{child_node2.to_html()}{child_node3.to_html()}<\div>")
+        self.assertEqual(node.to_html(), f"<div prop3=\"c\" prop4=\"d\"><p prop1=\"a\" prop2=\"b\">test 1</p><p>test 2</p>test 3</div>")
     
     def test_to_html_nested(self):
         child_node1 = LeafNode("p", "test 1", {"prop1": "a", "prop2": "b"})
@@ -75,7 +75,7 @@ class TestParentNode(unittest.TestCase):
         child_node3 = LeafNode(None, "test 3")
         parent_node = ParentNode("div", [child_node1, child_node2], {"prop3": "c", "prop4": "d"})
         node = ParentNode("div", [child_node3, parent_node], None)
-        self.assertEqual(node.to_html(), f"<div>{child_node3.to_html()}{parent_node.to_html()}<\div>")
+        self.assertEqual(node.to_html(), f"<div>test 3<div prop3=\"c\" prop4=\"d\"><p prop1=\"a\" prop2=\"b\">test 1</p><p>test 2</p></div></div>")
 
 if __name__ == "__main__":
     unittest.main()

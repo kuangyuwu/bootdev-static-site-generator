@@ -1,4 +1,4 @@
-from .htmlnode import LeafNode
+from src.htmlnode import LeafNode
 
 text_type_text = "text"
 text_type_bold = "bold"
@@ -39,3 +39,6 @@ def text_node_to_html_node(text_node):
         return LeafNode("img", text_node.text, {"src": text_node.url, "alt": text_node.text})
     raise ValueError(f"Invalid text type:{text_node.text_type}")
     
+if __name__ == '__main__':
+    node = TextNode("abc **ad badf** *adf* **ad oepj**", text_type_text)
+    print(node)

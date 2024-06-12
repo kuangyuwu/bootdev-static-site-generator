@@ -11,6 +11,11 @@ block_type_quote = "quote"
 block_type_ul = "unordered_list"
 block_type_ol = "ordered_list"
 
+def markdown_to_html_node(markdown: str) -> HTMLNode:
+    blocks = markdown_to_blocks(markdown)
+    children = [block_to_html_node(block) for block in blocks]
+    return ParentNode("div", children)
+
 def markdown_to_blocks(markdown: str) -> list[str]:
     blocks: list[str] = []
     lines: list[str] = markdown.split("\n")

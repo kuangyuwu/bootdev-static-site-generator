@@ -5,6 +5,7 @@ from src.block import (
     block_to_block_type,
     block_type_p, block_type_h, block_type_code, block_type_quote, block_type_ul, block_type_ol,
     block_to_html_node,
+    markdown_to_html_node,
 )
 
 class TestBlock(unittest.TestCase):
@@ -286,3 +287,49 @@ class TestBlock(unittest.TestCase):
         self.assertEqual(block_to_html_node(block_ol2).to_html(), "<ol><li>This is an <b>ordered</b> list</li><li>with <i>two items</i></li></ol>")
         self.assertEqual(block_to_html_node(block_ol3).to_html(), "<ol><li>This is an <b>ordered</b> list</li><li>with a lot of items</li><li>more</li><li>more</li><li>more</li><li>more</li><li>more</li><li>more</li><li>more</li><li>more</li></ol>")
         self.assertEqual(block_to_html_node(block_ol_fake).to_html(), "<p>1. This is almost an ordered list<br>3. Oops</p>")
+    
+    def test_markdown_to_html_node(self):
+        markdown = (
+            "### This is a heading\n"
+            "\n"
+            "This is another paragraph with *italic* text and `code` here.\n"
+            "This is the same paragraph on a new line.\n"
+            "\n"
+            "\n"
+            "\n"
+            "```\n"
+            "if __name__ == \"__main__\":\n"
+            "\tprint(\"hello world\", 3 * 2 * 1)\n"
+            r"\"```\"\n"
+            "```\n"
+            "\n"
+            "\n"
+            ">This is a quote with *italic* text, some `code`, and **bold** text.\n"
+            ">This is a quote\n"
+            ">with two lines.\n"
+            "\n"
+            "* This is an **unordered** list\n"
+            "* with *two items*\n"
+            "\n"
+            "1. This is an **ordered** list\n"
+            "2. with *two items*"
+        )
+        self.assertEqual(
+            markdown_to_html_node(markdown).to_html(),
+            (
+                "<div>"
+                "<h3>This is a heading</h3>"
+                "<p>This is another paragraph with <i>italic</i> text and <code>code</code> here.<br>This is the same paragraph on a new line.</p>"
+                "<pre><code>\n"
+                "if __name__ == \"__main__\":\n"
+                "\tprint(\"hello world\", 3 * 2 * 1)\n"
+                r"\"```\"\n"
+                "</code></pre>"
+                "<blockquote>This is a quote with <i>italic</i> text, some <code>code</code>, and <b>bold</b> text.<br>"
+                "This is a quote<br>"
+                "with two lines.</blockquote>"
+                "<ul><li>This is an <b>unordered</b> list</li><li>with <i>two items</i></li></ul>"
+                "<ol><li>This is an <b>ordered</b> list</li><li>with <i>two items</i></li></ol>"
+                "</div>"
+            )
+        )

@@ -7,8 +7,8 @@ def copy_static_to_public() -> None:
         print(f"Start copying {src} to {dst}")
         items = os.listdir(src)
         for item in items:
-            old_path = src + "/" + item
-            new_path = dst + "/" + item
+            old_path = os.path.join(src, item)
+            new_path = os.path.join(dst, item)
             if os.path.isfile(old_path):
                 print(f"Copying {old_path} to {new_path}")
                 shutil.copy(old_path, new_path)
